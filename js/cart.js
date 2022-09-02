@@ -150,11 +150,17 @@ function LectureDuPanier() {
       console.log("produits ajoutés!");
     }
   } else {
+    //faire apparaitre un paragrphe html pour dire que le panier est vide
     let paragrapheVide = document.createElement("p");
     paragrapheVide.textContent = "Votre panier est vide.";
     let sectionPanier = document.getElementById("cart__items");
     sectionPanier.appendChild(paragrapheVide);
     console.log("votre panier est vide");
+    //faire apparaitre le nombre 0 dans totalqty et prixTotal dans le panier
+    let spanTotalQty = document.getElementById("totalQuantity");
+    spanTotalQty.textContent = "0";
+    let spanTotalPrice = document.getElementById("totalPrice");
+    spanTotalPrice.textContent = "0";
   }
 }
 
