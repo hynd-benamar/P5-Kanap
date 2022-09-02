@@ -73,7 +73,7 @@ function affichageDonnesProduit(produit) {
   let choixDeProduit = document.getElementById("addToCart");
   // On écoute ce qu'il se passe sur le bouton #addToCart pour faire l'action :
   choixDeProduit.addEventListener("click", function () {
-    console.log("clic effectué");
+    console.log("clic effectué sur le bouton Ajouter au panier");
     //on recupere l'ID, la valeur de la couleur choisie et la valeur de la quantite
     let couleurChoisie = listeDeCouleur.value;
     let quantiteChoisie = listeQuantite.value;

@@ -66,11 +66,10 @@ function affichageProduitDansPanier(canape, cartDataOfProduct, sectionPanier) {
   inputQuantity.setAttribute("max", "100");
   //---------------MAJ du panier lors du changement de la value de l'input qty--------------------
   //au changement de la valeur de l'input quantite applique la fonction changementDeValeur
-  inputQuantity.addEventListener("change", function (changementDeValeur) {
-    //prend l'objet dans LS
+  inputQuantity.addEventListener("change", function () {
+    //prend l'objet dans LS et ecrit lui la valeur affiché dans l'input
     quantiteChoisie = inputQuantity.value;
     updateQty(quantiteChoisie);
-    //ecrit lui la valeur de inputQuantity
   });
   function updateQty(qty) {
     console.log(qty);
@@ -136,7 +135,7 @@ function getProduct(product, sectionPanier) {
 //---------------------------------------------------------------------------------------------------------
 LectureDuPanier();
 function LectureDuPanier() {
-  // Si le tableau localStorage contient au moins un objet, on affiche le panier.
+  // si l'élément 'monPanier' est stocké dans le web storage
   if (localStorage.getItem("monPanier")) {
     console.log("le panier a trouver un objet dans le localStorage");
     /*Declare la variable "panierDuLocalStorage" dans laquelle on met les key et les value qui sont dans le LS
@@ -144,7 +143,6 @@ function LectureDuPanier() {
     localStorage.getItem -> va dans localstorage et lis l'item ("mon panier"))*/
     let panierDuLocalStorage = JSON.parse(localStorage.getItem("monPanier"));
     console.log("le panier accéde au localStorage");
-
     let sectionPanier = document.getElementById("cart__items");
     //dans cet element on insere une boucle pour chaque indice article dans le panier
     for (let article of panierDuLocalStorage) {
@@ -152,10 +150,20 @@ function LectureDuPanier() {
       console.log("produits ajoutés!");
     }
   } else {
+    let paragrapheVide = document.createElement("p");
+    paragrapheVide.textContent = "Votre panier est vide.";
+    let sectionPanier = document.getElementById("cart__items");
+    sectionPanier.appendChild(paragrapheVide);
     console.log("votre panier est vide");
   }
 }
 
 function updateTotal() {
-  
+  //prendre chaque produit séparement
+  getProduct();
+  //tu prends le prix de l'article dans l'API
+  //tu prends la quantité de l'article
+  // tu les multiplie
+  //tu l'écrit ce PrixTotalChaqueArticle dans LS
+  //PrixTotalChaqueArticle ajouter = updateTotal
 }
