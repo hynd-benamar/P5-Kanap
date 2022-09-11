@@ -3,10 +3,10 @@
 //--------------------------------------------------------------------------
 //la variable rechercheParametre récupère l'url de la page
 let rechercheParametre = new URLSearchParams(document.location.search);
-// la variable id  récupére la valeur du paramètre _id
+// la variable id  récupére la valeur du paramètre id
 let idProduit = rechercheParametre.get("id");
 //--------------------------------------------------------------------------
-//Requete envoyée au service web ou recupérer les donées de l'Api
+//Requete envoyée au service web ou recupérer les données de l'Api
 //--------------------------------------------------------------------------
 fetch("http://localhost:3000/api/products/" + idProduit)
   .then(function (response) {
@@ -74,9 +74,10 @@ function affichageDonnesProduit(produit) {
   // On écoute ce qu'il se passe sur le bouton #addToCart pour faire l'action :
   choixDeProduit.addEventListener("click", function () {
     console.log("clic effectué sur le bouton Ajouter au panier");
-    //on recupere l'ID, la valeur de la couleur choisie et la valeur de la quantite
+    //on recupere l'ID, la valeur de la couleur choisie, la valeur de la quantite et celle du prix unitaire dans l'APIS
     let couleurChoisie = listeDeCouleur.value;
     let quantiteChoisie = listeQuantite.value;
+    let prixProduitUnitaire = produit.price;
     let update = 0;
     //Analyse une chaîne de caractères JSON et construit la valeur JavaScript décrit par cette chaîne
     let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
@@ -86,19 +87,18 @@ function affichageDonnesProduit(produit) {
       for (let compteurProduit = 0; compteurProduit < panierEnCours.length; compteurProduit++) {
         if (panierEnCours[compteurProduit].idProduit == idProduit) {
           if (panierEnCours[compteurProduit].couleurChoisie == couleurChoisie) {
-            panierEnCours[compteurProduit].quantiteChoisie =
-              parseInt(panierEnCours[compteurProduit].quantiteChoisie) + parseInt(quantiteChoisie);
+            panierEnCours[compteurProduit].quantiteChoisie = parseInt(panierEnCours[compteurProduit].quantiteChoisie) + parseInt(quantiteChoisie);
             update = 1;
           }
         }
       }
       if (update == 0) {
         //ajout dans le tableau de l'objet avec les values choisies par le user
-        panierEnCours.push({ idProduit, couleurChoisie, quantiteChoisie });
+        panierEnCours.push({ idProduit, couleurChoisie, quantiteChoisie, prixProduitUnitaire });
         console.log("un produit différent a été ajouté au panier déjà existant");
       }
     } else {
-      panierEnCours = [{ idProduit, couleurChoisie, quantiteChoisie }];
+      panierEnCours = [{ idProduit, couleurChoisie, quantiteChoisie, prixProduitUnitaire }];
       console.log("un nouveau tableau a été crée");
     }
     //enregistrer le panier

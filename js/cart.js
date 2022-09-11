@@ -96,7 +96,6 @@ function affichageProduitDansPanier(canape, cartDataOfProduct, sectionPanier) {
       (truc) =>
         truc.idProduit !== cartDataOfProduct.idProduit || truc.couleurChoisie !== cartDataOfProduct.couleurChoisie
     );
-
     console.log(panierDuLocalStorage);
     // envoyer le nouveau contenu du panier au lS
     localStorage.setItem("monPanier", JSON.stringify(panierDuLocalStorage));
@@ -138,7 +137,6 @@ function getProduct(product, sectionPanier) {
     });
 }
 //---------------------------------------------------------------------------------------------------------
-//
 //---------------------------------------------------------------------------------------------------------
 LectureDuPanier();
 function LectureDuPanier() {
@@ -170,4 +168,53 @@ function LectureDuPanier() {
     spanTotalPrice.textContent = "0";
   }
 }
+//-----------------------Calcule du prix total et de la quantité--------------------------------
 //----------------------------------------------------------------------------------------------
+//declaration de la variable pour y mettre les prix qui sont dans le panier
+let tableauDeTousLesPrix = [];
+let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
+//on utilise une boucle pour aller chercher les prix dans le panier
+for (let m = 0; m < panierEnCours.length; m++) {
+  //variable qui recupere les prix dans le localStorage
+  let prixProduitDansLS = panierEnCours[m].prixProduitUnitaire;
+  //on met les prix du panier ds la variable tableauDeTousLesPrix pour les pousser dans son tableau
+  tableauDeTousLesPrix.push(prixProduitDansLS);
+}
+//on additionne les prix qui sont dans le tableau de la variable tableauDeTousLesPrix avec la méthode reduce()
+//Additionner toutes les valeurs d'un tableau
+//var total = [0, 1, 2, 3].reduce((a, b)=> a + b,0);
+// total == 6
+// 1 on declare une constante qui sera egal à 2 arguments additionnés et qui servira calculateur
+const reducteur = (accumulator, currentValue) => accumulator + currentValue;
+// 2 on declare une constante qui appliquera la methode reduce sur notre tableau des prix
+// et qui réalisera une reduction grace à un calcul
+//si on appelle reduce() sur un tableau vide sans fournir de valeur initiale, on aura une erreur
+const TotalDesPrix = tableauDeTousLesPrix.reduce(reducteur, 0);
+//faire apparaitre le total dans prixTotal dans le panier
+let spanTotalPrice = document.getElementById("totalPrice");
+spanTotalPrice.textContent = TotalDesPrix;
+//----------------------------------------------------------------------------------------------
+//declaration de la variable pour y mettre les quantite qui sont dans le panier
+let tableauDeToutesLesQuantites = [];
+//on utilise une boucle pour aller chercher les quantites dans le panier
+for (let m = 0; m < panierEnCours.length; m++) {
+  //On déclare à nouveau une variable qui est égale à tout le contenu de ma key monPanier sous forme de array
+  let allValueMonpanier = JSON.parse(localStorage.getItem("monPanier"));
+  //variable qui recupere les quantites dans le localStorage
+  let quantiteProduitDansLS = parseInt(allValueMonpanier[m].quantiteChoisie);
+  //on met les quantite du panier ds la variable tableauDeToutesLesQuantites pour les pousser dans son tableau
+  tableauDeToutesLesQuantites.push(quantiteProduitDansLS);
+}
+const TotalDesQuantites = tableauDeToutesLesQuantites.reduce(reducteur, 0);
+console.log(TotalDesQuantites);
+let spanTotalQty = document.getElementById("totalQuantity");
+spanTotalQty.textContent = TotalDesQuantites;
+//----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
+//-----------------------------------PARTIE FORMULAIRE------------------------------------------
+// 1 Creer un addEventListener sur le click du bouton Commander pour enregistrer dans LS les value
+const btnCommander = document.getElementById("order");
+btnCommander.addEventListener("click", () => {
+  localStorage.setItem("prenomLs", document.getElementById("firstName").value);
+  console.log("prenomLs");
+});
