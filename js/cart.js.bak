@@ -258,14 +258,14 @@ formulaire[0].addEventListener("submit", async (e) => {
   e.preventDefault();
 
   let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
-  let products = [];
+  let produits = [];
   for (let idx in panierEnCours) {
-    products.push(panierEnCours[idx]["idProduit"]);
+    produits.push(panierEnCours[idx]["idProduit"]);
   }
   //**********3 verifier la validités des données du formulaire avant l'envoie dans le localStorage*
   //regex pour le prenom, le nom et la ville
   const regExPrenomNomVille = (valeur) => {
-    return /^[A-Za-z(çàâéèêëîïôöù)'-\s]{2,20}$/.test(valeur);
+    return /^[A-Za-z(çàâéèêëîïôöù)\s'-]{2,20}$/.test(valeur);
   };
   //message d'alerte commun
   const textAlertCommun = (value) => {
@@ -336,14 +336,14 @@ formulaire[0].addEventListener("submit", async (e) => {
       city: document.getElementById("city").value,
       email: document.getElementById("email").value,
     };
-    console.log(JSON.stringify({ contact, products }));
+    console.log(JSON.stringify({contact, produits}));
     fetch("http://localhost:3000/api/products/order", {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        "Accept": "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ contact, products }),
+      body: JSON.stringify({contact, produits}),
     })
       .then(function (response) {
         if (response.ok) {
@@ -356,8 +356,6 @@ formulaire[0].addEventListener("submit", async (e) => {
       .catch(function (err) {
         console.log(err);
       });
-    //aller vers la page confirmation.js
-    window.location = "confirmation.html";
   } else {
     alert("Veuillez entrer des coordonnées valides");
   }

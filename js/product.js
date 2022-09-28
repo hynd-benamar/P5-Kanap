@@ -77,7 +77,6 @@ function affichageDonnesProduit(produit) {
     //on recupere l'ID, la valeur de la couleur choisie, la valeur de la quantite et celle du prix unitaire dans l'APIS
     let couleurChoisie = listeDeCouleur.value;
     let quantiteChoisie = listeQuantite.value;
-    let prixProduitUnitaire = produit.price;
     let update = 0;
     //Analyse une chaîne de caractères JSON et construit la valeur JavaScript décrit par cette chaîne
     let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
@@ -87,18 +86,19 @@ function affichageDonnesProduit(produit) {
       for (let compteurProduit = 0; compteurProduit < panierEnCours.length; compteurProduit++) {
         if (panierEnCours[compteurProduit].idProduit == idProduit) {
           if (panierEnCours[compteurProduit].couleurChoisie == couleurChoisie) {
-            panierEnCours[compteurProduit].quantiteChoisie = parseInt(panierEnCours[compteurProduit].quantiteChoisie) + parseInt(quantiteChoisie);
+            panierEnCours[compteurProduit].quantiteChoisie =
+              parseInt(panierEnCours[compteurProduit].quantiteChoisie) + parseInt(quantiteChoisie);
             update = 1;
           }
         }
       }
       if (update == 0) {
         //ajout dans le tableau de l'objet avec les values choisies par le user
-        panierEnCours.push({ idProduit, couleurChoisie, quantiteChoisie, prixProduitUnitaire });
+        panierEnCours.push({ idProduit, couleurChoisie, quantiteChoisie });
         console.log("un produit différent a été ajouté au panier déjà existant");
       }
     } else {
-      panierEnCours = [{ idProduit, couleurChoisie, quantiteChoisie, prixProduitUnitaire }];
+      panierEnCours = [{ idProduit, couleurChoisie, quantiteChoisie }];
       console.log("un nouveau tableau a été crée");
     }
     //enregistrer le panier
