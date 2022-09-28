@@ -259,8 +259,8 @@ formulaire[0].addEventListener("submit", async (e) => {
 
   let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
   let products = [];
-  for (let idx in panierEnCours) {
-    products.push(panierEnCours[idx]["idProduit"]);
+  for (let index in panierEnCours) {
+    products.push(panierEnCours[index]["idProduit"]);
   }
   //**********3 verifier la validités des données du formulaire avant l'envoie dans le localStorage*
   //regex pour le prenom, le nom et la ville
@@ -277,31 +277,30 @@ formulaire[0].addEventListener("submit", async (e) => {
   };
   //email
   const regExEmail = (valeur) => {
-    return true;
-    return /^[A-Za-z\d'-\s]{10,40}$/.test(valeur);
+    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(valeur);
   }; // classe \w correspondent à "a" à "z", "A" à "Z", "0" à "9" et "_"
 
-  function controleDuPrenom() {
-    let laPrenom = document.getElementById("firstName").value;
-    if (regExPrenomNomVille(laPrenom)) {
+  function controlePrenom() {
+    let prenom = document.getElementById("firstName").value;
+    if (regExPrenomNomVille(prenom)) {
       return true;
     } else {
       alert(textAlertCommun("Le prénom"));
       return false;
     }
   }
-  function controleDuNom() {
-    let leNom = document.getElementById("lastName").value;
-    if (regExPrenomNomVille(leNom)) {
+  function controleNom() {
+    let nom = document.getElementById("lastName").value;
+    if (regExPrenomNomVille(nom)) {
       return true;
     } else {
       alert(textAlertCommun("Le nom"));
       return false;
     }
   }
-  function controleLaVille() {
-    let laVille = document.getElementById("city").value;
-    if (regExPrenomNomVille(laVille)) {
+  function controleVille() {
+    let ville = document.getElementById("city").value;
+    if (regExPrenomNomVille(ville)) {
       return true;
     } else {
       alert(textAlertCommun("La ville"));
@@ -309,25 +308,25 @@ formulaire[0].addEventListener("submit", async (e) => {
     }
   }
   function controleAdresse() {
-    let lAdresse = document.getElementById("address").value;
-    if (regExAdresse(lAdresse)) {
+    let adresse = document.getElementById("address").value;
+    if (regExAdresse(adresse)) {
       return true;
     } else {
-      alert("L'adresse n'est pas valide, les caractères spéciaux autorisés sont àâéèêëîïôöù ainsi que ' et -");
+      alert("L'adresse n'est pas valide");
       return false;
     }
   }
   function controleEmail() {
-    let lEmail = document.getElementById("email").value;
-    if (regExEmail(lEmail)) {
+    let email = document.getElementById("email").value;
+    if (regExEmail(email)) {
       return true;
     } else {
-      alert("Email invalide, les caractères spéciaux autorisés sont -._ et @");
+      alert("Email invalide");
       return false;
     }
   }
   //**********4 condition qui determine l'envoie de l'objet formulaireValues dans le localStorage***
-  if (controleDuPrenom() && controleDuNom() && controleLaVille() && controleAdresse() && controleEmail()) {
+  if (controlePrenom() && controleNom() && controleVille() && controleAdresse() && controleEmail()) {
     //objet qui contient les infos du formulaire et le contenu du panier
     let contact = {
       firstName: document.getElementById("firstName").value,
@@ -339,25 +338,24 @@ formulaire[0].addEventListener("submit", async (e) => {
     console.log(JSON.stringify({ contact, products }));
     fetch("http://localhost:3000/api/products/order", {
       method: "POST",
+      body: JSON.stringify({ contact, products }),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ contact, products }),
     })
-      .then(function (response) {
-        if (response.ok) {
-          return response.json();
+      // Récupération et stockage de la réponse de l'API (orderId)
+      .then((response) => {
+        return response.json();
+      })
+      .then((server) => {
+        orderId = server.orderId;
+        console.log(orderId);
+        // Si l'orderId a bien été récupéré, on redirige l'utilisateur vers la page de Confirmation
+        if (orderId != "") {
+          location.href = "confirmation.html?id=" + orderId;
         }
-      })
-      .then(function (value) {
-        console.log(value);
-      })
-      .catch(function (err) {
-        console.log(err);
       });
-    //aller vers la page confirmation.js
-    window.location = "confirmation.html";
   } else {
     alert("Veuillez entrer des coordonnées valides");
   }
