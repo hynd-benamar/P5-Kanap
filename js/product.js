@@ -18,9 +18,9 @@ fetch("http://localhost:3000/api/products/" + idProduit)
     //console.log(value);
     affichageDonnesProduit(value);
   })
-  .catch(function (err) {
-    console.log(err);
-    // Une erreur est survenue
+  .catch(function (erreur) {
+    console.log(erreur);
+    alert("Oops il semble y avoir un problème veuiller réessayer plus tard");
   });
 //-------------------------------------------------------------------------
 //fonction pour l' affichage des données produits
@@ -73,36 +73,48 @@ function affichageDonnesProduit(produit) {
   let choixDeProduit = document.getElementById("addToCart");
   // On écoute ce qu'il se passe sur le bouton #addToCart pour faire l'action :
   choixDeProduit.addEventListener("click", function () {
-    console.log("clic effectué sur le bouton Ajouter au panier");
-    //on recupere l'ID, la valeur de la couleur choisie, la valeur de la quantite et celle du prix unitaire dans l'APIS
+    //on recupere l'ID, la valeur de la couleur choisie, la valeur de la quantite dans l'API
     let couleurChoisie = listeDeCouleur.value;
     let quantiteChoisie = listeQuantite.value;
     let update = 0;
-    //Analyse une chaîne de caractères JSON et construit la valeur JavaScript décrit par cette chaîne
-    let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
-    if (panierEnCours) {
-      console.log(panierEnCours);
-      //boucle for sert de compteur pour le nombre de fois où la boucle sera executé. Demarre à zéro car on n'a pas encore parcouru la boucle.
-      for (let compteurProduit = 0; compteurProduit < panierEnCours.length; compteurProduit++) {
-        if (panierEnCours[compteurProduit].idProduit == idProduit) {
-          if (panierEnCours[compteurProduit].couleurChoisie == couleurChoisie) {
-            panierEnCours[compteurProduit].quantiteChoisie =
-              parseInt(panierEnCours[compteurProduit].quantiteChoisie) + parseInt(quantiteChoisie);
-            update = 1;
+    if (
+      typeof couleurChoisie == "undefined" ||
+      couleurChoisie == 0 ||
+      couleurChoisie == null ||
+      quantiteChoisie == "undefined" ||
+      quantiteChoisie == 0 ||
+      quantiteChoisie == null
+    ) {
+      alert("veuillez choisir une couleur et une quantité supérieur à 0 !");
+    } else {
+      //Analyse une chaîne de caractères JSON et construit la valeur JavaScript décrit par cette chaîne
+      let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
+      if (panierEnCours) {
+        console.log(panierEnCours);
+        //boucle for sert de compteur pour le nombre de fois où la boucle sera executé.
+        //Démarre à zéro car on n'a pas encore parcouru la boucle.
+        for (let compteurProduit = 0; compteurProduit < panierEnCours.length; compteurProduit++) {
+          if (panierEnCours[compteurProduit].idProduit == idProduit) {
+            if (panierEnCours[compteurProduit].couleurChoisie == couleurChoisie) {
+              panierEnCours[compteurProduit].quantiteChoisie =
+                parseInt(panierEnCours[compteurProduit].quantiteChoisie) + parseInt(quantiteChoisie);
+              update = 1;
+            }
           }
         }
+        if (update == 0) {
+          //ajout dans le tableau de l'objet avec les values choisies par le user
+          panierEnCours.push({ idProduit, couleurChoisie, quantiteChoisie });
+          console.log("un produit différent a été ajouté au panier déjà existant");
+        }
+      } else {
+        panierEnCours = [{ idProduit, couleurChoisie, quantiteChoisie }];
+        console.log("un nouveau tableau a été crée");
       }
-      if (update == 0) {
-        //ajout dans le tableau de l'objet avec les values choisies par le user
-        panierEnCours.push({ idProduit, couleurChoisie, quantiteChoisie });
-        console.log("un produit différent a été ajouté au panier déjà existant");
-      }
-    } else {
-      panierEnCours = [{ idProduit, couleurChoisie, quantiteChoisie }];
-      console.log("un nouveau tableau a été crée");
+      //enregistrer le panier
+      //convertit la valeur JavaScript en chaîne JSON
+      //pour etre envoyé dans la key "monPanier" du localStorage
+      localStorage.setItem("monPanier", JSON.stringify(panierEnCours));
     }
-    //enregistrer le panier
-    //convertit la valeur JavaScript en chaîne JSON pour etre envoyer dans la key "monPanier" du localStorage
-    localStorage.setItem("monPanier", JSON.stringify(panierEnCours));
   });
 }

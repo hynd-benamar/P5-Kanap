@@ -2,17 +2,17 @@
 //                  fonction pour l' affichage des données produits
 //-------------------------------------------------------------------------------------
 function affichageProduitDansPanier(canape, cartDataOfProduct, sectionPanier) {
-  // creation des elements html dans le DOM
+  // creation des elements html articles dans le DOM
   let articlePanier = document.createElement("article");
   sectionPanier.appendChild(articlePanier);
   articlePanier.dataset.id = cartDataOfProduct.idProduit;
   articlePanier.dataset.color = cartDataOfProduct.couleurChoisie;
   articlePanier.classList.add("cart__item");
-
+  // creation de l'element html div dans le DOM
   let divImageProduitPanier = document.createElement("div");
   articlePanier.appendChild(divImageProduitPanier);
   divImageProduitPanier.classList.add("cart__item__img");
-
+  // creation de l'element html image dans le DOM
   let imageProduit = document.createElement("img");
   divImageProduitPanier.appendChild(imageProduit);
   imageProduit.src = canape.imageUrl;
@@ -258,20 +258,21 @@ function updateTotal() {
 //--------------------------------------------------------------------------------------------------------
 //                                           PARTIE FORMULAIRE
 //--------------------------------------------------------------------------------------------------------
-//**********1 Sélection du bouton Commander********************************************************
+// Sélection du Formulaire dans le DOM
 const formulaire = document.getElementsByClassName("cart__order__form");
-//**********2 Creer un addEventListener sur le submit du btn Commander pr enregistrer ds LS les value
 let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
 if (typeof panierEnCours == "undefined" || panierEnCours == 0 || panierEnCours == null) {
   formulaire[0].setAttribute("style", "display:none");
 } else {
+  //******Creer un addEventListener sur le submit du btn Commander pr enregistrer ds LS les value*****
   formulaire[0].addEventListener("submit", async (e) => {
     e.preventDefault();
-    let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
+    //let panierEnCours = JSON.parse(localStorage.getItem("monPanier"));
     let products = [];
     for (let index in panierEnCours) {
       products.push(panierEnCours[index]["idProduit"]);
     }
+
     //**********3 verifier la validité des données du formulaire avant l'envoie dans le localStorage*
     //regex pour le prenom, le nom et la ville
     const regExPrenomNomVille = (valeur) => {
